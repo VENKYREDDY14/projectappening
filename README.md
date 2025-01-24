@@ -1,146 +1,180 @@
-Blog Management System API
 
-Project Description
+# Blog Management System API
 
-This repository implements a RESTful API for a blog management system using Node.js, Express.js, and MongoDB. It offers functionalities for user management (signup, login, role-based access control), blog creation, editing, deletion, and comment management.
+## Project Description
+The Blog Management System API is a RESTful service designed for managing blogs and comments with role-based access control. It supports user authentication, email verification, and the management of blogs and comments by users with specific roles (Admin, Editor, User). The project is built using Express.js and MongoDB and deployed on a cloud platform.
 
-Features
+## Features
+- User Registration and Login
+  - Password hashing with bcrypt.
+  - JWT-based authentication.
+  - Optional email verification using nodemailer.
 
-  - User Management:
-      - User registration and login with secure password hashing
-      - Role-based access control (Admin, Editor, User)
-      - Email verification 
-  - Blog Management:
-      - Create, read, update, and delete blog posts
-      - Assign blogs to editors 
-  - Comment Management:
-      - Add and delete comments with user authorization
-  - Authentication:
-      - JWT-based authentication for secure access control
+- Role-Based Access Control
+  - Admin: Full access to manage blogs and assign blogs to editors.
+  - Editor: Edit assigned blogs.
+  - User: View blogs and manage their own comments.
 
-Installation and Setup
+- Blog Management
+  - API endpoints for creating, updating, retrieving, and deleting blogs.
+  - Role-based permissions for blog management.
 
-1.  Clone the repository:
-    
-    git clone https://github.com/VENKYREDDY14/projectappening.git
+- Comment Management
+  - API endpoints for users to add and delete their own comments.
 
-2.  Install dependencies:
-    
-    npm install
+## Technology Stack
+- **Backend**: Node.js, Express.js
+- **Database**: MongoDB with Mongoose
+- **Authentication**: JWT
+- **Email Verification** (optional): nodemailer
+- **Deployment**: Render/Heroku/Vercel
 
-3.  Create a .env file in the project root directory and add the following environment variables:
-    
-    CONNECTION_STRING=<your_mongodb_connection_string>
-    PORT=<port_number>
-    SECRET_KEY=<your_jwt_secret_key>
-    # EMAIL=<your_email_verification_secret>
-    # PASSWORD=<password>
+---
 
-      - Replace <your_mongodb_connection_string> with your MongoDB connection URI.
-      - Replace <your_jwt_secret_key> with a strong secret key for JWT signing.
-      - to implement email verification , provide secrets and link templates accordingly.
+## Installation and Setup
 
-4.  Start the server:
-    
-    npm start
+### Prerequisites
+- Node.js and npm installed on your local machine.
+- MongoDB instance (local or cloud-based).
 
-    This will start the server, typically listening on port 3300.
+### Steps to Set Up Locally
+1. **Clone the Repository**:
+   ```bash
+   git clone <https://github.com/VENKYREDDY14/projectappening.git>
+   cd <repository-directory>
+   ```
 
-API Documentation
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
 
-Base URL: http://localhost:3300/
+3. **Configure Environment Variables**:
+   Create a `.env` file in the root directory and add the following:
+   ```env
+  CONNECTION_STRING="mongodb+srv://venky:venkyreddy@cluster0.85int.mongodb.net/appening"
+PORT=3300
+SECRET_KEY='appening'
+EMAIL='venkyreddy2031@gmail.com'
+PASSWORD='xlrl lhxl xusg pkxz'
+   ```
 
-User Management:
+4. **Run the Application**:
+   ```bash
+   npm start
+   ```
+   The server will start on `http://localhost:3300` by default.
 
-  - POST /users/signup
-      - Request Body:
-          - username (string, required)
-          - email (string, required)
-          - password (string, required)
-          - created at(Date,default)
-          - verified (Boolean,default:false)
-      - Response:
-          - 201 Created - Success (with user details)
-          - 400 Bad Request - Invalid input or user already exists
-  - POST /users/login
-      - Request Body:
-          - email (string, required)
-          - password (string, required)
-      - Response:
-          - 200 OK - Success (with JWT in the Authorization header)
-          - 401 Unauthorized - Invalid credentials
-  - GET /users/me
-      - Authorization: Bearer  (required)
-      - Response:
-          - 200 OK - User information
-          - 401 Unauthorized - Invalid JWT
+---
 
-Blog Management:
+## API Documentation
 
-  - POST /blogs
-      - Authorization: Bearer  (Admin role required)
-      - Request Body:
-          - title (string, required)
-          - content (string, required)
-      - Response:
-          - 201 Created - Created blog post (with details)
-          - 400 Bad Request - Missing required fields
-          - 401 Unauthorized - Unauthorized access
-  - GET /blogs
-      - Response:
-          - 200 OK - Array of blog posts (with details)
+### Authentication
 
-  - PUT /blogs/:id
-      - Authorization: Bearer  (Admin or Editor role required for the blog)
-      - Path Parameter:
-          - id (string) - Blog post ID
-      - Request Body:
-          - title (string, optional)
-          - content (string, optional)
-      - Response:
-          - 200 OK - Updated blog post
-          - 400 Bad Request - Missing required fields
-          - 401 Unauthorized - Unauthorized access
-          - 404 Not Found - Blog post not found
-  - DELETE /blogs/:id
-      - Authorization: Bearer  (Admin role required)
-      - Path Parameter:
-          - id (string) - Blog post ID
-      - Response:
-          - 204 No Content - Blog post deleted
-          - 401 Unauthorized - Unauthorized access
-          - 404 Not Found - Blog post not found
+#### 1. **User Registration**
+- **Endpoint**: `POST /api/auth/register`
+- **Request Body**:
+  ```json
+  {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "securepassword",
+    "role": "User" // Optional, default is User
+    "visited":false(default)
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "message": "User registered successfully. Please verify your email."
+    "token":<token for verification>
+  }
+  ```
 
-Comment Management:
+#### 2. **User Login**
+- **Endpoint**: `POST /api/auth/login`
+- **Request Body**:
+  ```json
+  {
+    "email": "john@example.com",
+    "password": "securepassword"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "token": "<jwt-token>",
+    "message": "Login successful."
+  }
+  ```
 
-  - POST /blogs/:id/comments
-      - Authorization: Bearer 
-      - Request Body:
-          - content (string)
-      - Response:
-          - 201 Created - Created comment
-          - 400 Bad Request - Missing required fields
-          - 401 Unauthorized - Unauthorized access
-          - 404 Not Found - Blog post not found
-  - GET /blogs/:id/comments
-      - Response:
-          - 200 OK - Array of comments
-          - 404 Not Found - Blog post not found
-  - DELETE /blogs/:id/comments/:commentId
-      - Authorization: Bearer  (Admin or comment author required)
-      - Response:
-          - 204 No Content - Comment deleted
-          - 401 Unauthorized - Unauthorized access
-          - 404 Not Found - Comment not found
+### Blog Management
 
-Error Handling:
+#### 1. **Create Blog** (Admin Only)
+- **Endpoint**: `POST /api/blogs`
+- **Headers**:
+  ```json
+  {
+    "Authorization": "Bearer <jwt-token>"
+  }
+  ```
+- **Request Body**:
+  ```json
+  {
+    "title": "Blog Title",
+    "content": "Blog content here..."
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "message": "Blog created successfully.",
+    "blog": { ... }
+  }
+  ```
 
-  - All API endpoints return a consistent error response format with an error code, message, and details.
+### Comment Management
+
+#### 1. **Add Comment**
+- **Endpoint**: `POST /api/blogs/:id/comments`
+- **Headers**:
+  ```json
+  {
+    "Authorization": "Bearer <jwt-token>"
+  }
+  ```
+- **Request Body**:
+  ```json
+  {
+    "comment": "This is a comment."
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "message": "Comment added successfully.",
+    "comment": { ... }
+  }
+  ```
+
+---
+
+## Deployment
+
+### Deployment Steps
+1. Choose a deployment platform: Render/Heroku/Vercel.
+2. Configure environment variables on the platform.
+3. Deploy the application following platform-specific instructions.
+4. Test the live API endpoints.
+
+### Live URL
+- Deployed Application:https://projectappening.onrender.com/
+
+---
+
+## Testing
+Use tools like Postman or curl to test the API endpoints. Ensure the required headers and body data are provided as specified.
+
+---
 
 
-Deployment
-
-  - This API can be deployed on platforms like Heroku, Vercel, or AWS.
-  - Configure environment variables for production deployment.
-
-I hope this README file is helpful!

@@ -89,12 +89,7 @@ Blog Management:
   - GET /blogs
       - Response:
           - 200 OK - Array of blog posts (with details)
-  - GET /blogs/:id
-      - Path Parameter:
-          - id (string) - Blog post ID
-      - Response:
-          - 200 OK - Blog post details
-          - 404 Not Found - Blog post not found
+
   - PUT /blogs/:id
       - Authorization: Bearer  (Admin or Editor role required for the blog)
       - Path Parameter:

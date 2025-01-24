@@ -1,3 +1,4 @@
+
 # Blog Management System API
 
 ## Project Description
@@ -39,7 +40,7 @@ The Blog Management System API is a RESTful service designed for managing blogs 
 ### Steps to Set Up Locally
 1. **Clone the Repository**:
    ```bash
-   git clone <repository-url>
+   git clone <https://github.com/VENKYREDDY14/projectappening.git>
    cd <repository-directory>
    ```
 
